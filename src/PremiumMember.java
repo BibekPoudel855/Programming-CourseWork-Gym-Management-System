@@ -4,4 +4,8 @@ public class PremiumMember extends GymMember {
     boolean isFullPayment;
     double paidAmount;
     double discountAmount;
+
+    public PremiumMember() {
+
+    }
 }
