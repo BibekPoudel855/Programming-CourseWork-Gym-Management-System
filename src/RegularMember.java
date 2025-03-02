@@ -8,7 +8,9 @@ public class RegularMember extends GymMember{
 
 //    Constructor
     public RegularMember(int id, String name, String location, String phone, String email, String gender, String DOB, String membershipStartDate, String referralSource) {
+        //calling parent class constructor
         super(id, name, location, phone, email, gender, DOB, membershipStartDate);
+//        setting instance variable
         this.isEligibleForUpgrade = false;
         this.plan = "basic";
         this.price = 6500;
@@ -21,6 +23,10 @@ public class RegularMember extends GymMember{
     public void markAttendance(){
         this.loyaltyPoints += 5;
         this.attendance++;
+
+//        if(getAttendance() >= attendanceLimit){
+//            this.isEligibleForUpgrade = true;
+//        }
     }
 //method that returns plan price based on price of plan
     public double getPlanPrice(String plan){
@@ -36,8 +42,27 @@ public class RegularMember extends GymMember{
         }
     }
     public String upgradePlan(String plan){
+        if(this.plan.toLowerCase().equals(plan.toLowerCase())){
+            return "Same Plan Selected";
+        }
+        if(!isEligibleForUpgrade){
+            return "User not eligible for upgrade plan. User Should complete attendance";
+        }
+
+
+        double planPrice = getPlanPrice(plan);
+        if(planPrice == -1){
+            return "Wrong PLan Selected. Please try again";
+        }
+
+
+        this.plan = plan.toLowerCase();
+        this.price = planPrice;
+        return  "Plan Upgraded to ".concat(plan).concat("Successfully") ;
 
     }
+
+//    getter methods
     public int getAttendanceLimit() {
         return attendanceLimit;
     }

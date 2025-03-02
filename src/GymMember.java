@@ -49,7 +49,7 @@ public abstract class GymMember {
         this.attendance = 0;
         this.loyaltyPoints = 0;
     }
-
+//    getter Methods
     public int getId() {
         return id;
     }
