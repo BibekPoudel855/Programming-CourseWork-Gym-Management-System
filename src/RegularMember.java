@@ -24,9 +24,9 @@ public class RegularMember extends GymMember{
         this.loyaltyPoints += 5;
         this.attendance++;
 
-//        if(getAttendance() >= attendanceLimit){
-//            this.isEligibleForUpgrade = true;
-//        }
+        if(getAttendance() >= attendanceLimit){
+            this.isEligibleForUpgrade = true;
+        }
     }
 //method that returns plan price based on price of plan
     public double getPlanPrice(String plan){
@@ -59,9 +59,22 @@ public class RegularMember extends GymMember{
         this.plan = plan.toLowerCase();
         this.price = planPrice;
         return  "Plan Upgraded to ".concat(plan).concat("Successfully") ;
-
     }
-
+    public void revertRegularMember(String removalReason){
+        super.resetMember();
+        isEligibleForUpgrade = false;
+        this.plan = "basic";
+        this.price = 6500;
+        this.removalReason = removalReason;
+    }
+    public void display(){
+        super.display();
+        System.out.println("Plan :- " +this.plan );
+        System.out.println("Price :- " +this.price );
+        if(removalReason.length()!=0){
+            System.out.println("Removal Reason :- "+this.removalReason);
+        }
+    }
 //    getter methods
     public int getAttendanceLimit() {
         return attendanceLimit;
