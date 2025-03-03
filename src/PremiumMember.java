@@ -1,10 +1,12 @@
 public class PremiumMember extends GymMember {
-    final double  premiumCharge;
-    String personalTrainer;
+    //    class Instance variables
     boolean isFullPayment;
     double paidAmount;
     double discountAmount;
-
+    String personalTrainer;
+    // final constant variable which is initialized in constructor
+    final double  premiumCharge;
+    // Constructor
     public PremiumMember(int id, String name, String location, String phone,
                          String email, String gender, String DOB, String membershipStartDate, String personalTrainer) {
         super(id, name, location, phone, email, gender, DOB, membershipStartDate);
@@ -14,9 +16,12 @@ public class PremiumMember extends GymMember {
         this.discountAmount = 0;
         this.personalTrainer = personalTrainer;
     }
+    // implementation of markAttendance() method which is abstract in GymMember Class
+    @Override
+    public void markAttendance() {
 
-//    getter methods
-
+    }
+    // getter methods of all instance variables
     public double getPremiumCharge() {
         return premiumCharge;
     }
@@ -36,6 +41,9 @@ public class PremiumMember extends GymMember {
     public double getDiscountAmount() {
         return discountAmount;
     }
+
+    /* method which invoked when user pay amount and it validates some unintentional condition
+    like pay amount less than 0 , pay more amount , duplication of payment etc*/
     public String payDueAmount(double paidAmount) {
         if(paidAmount<=0){
             return "You Cant Pay Money in Negative Value";
@@ -51,7 +59,6 @@ public class PremiumMember extends GymMember {
         if(this.paidAmount == premiumCharge){
             this.isFullPayment = true;
         }
-
         if(isFullPayment){
         return "You Sucessfully Paid " + paidAmount + ".";
         }else{
@@ -59,7 +66,7 @@ public class PremiumMember extends GymMember {
             return "You Sucessfully Paid " + paidAmount + " Your Due Amount is" + remainingAmount + ".";
         }
     }
-
+    // method which calculate discount based on payment made by user
     public void calculateDiscount(){
         if(this.isFullPayment){
             this.discountAmount = premiumCharge * 10 / 100;
@@ -68,7 +75,7 @@ public class PremiumMember extends GymMember {
             System.out.println("You Cannot get any Discount.");
         }
     }
-
+    // method which revert premium member
     public void revertPremiumMember(){
         super.resetMember();
         this.personalTrainer = "";
@@ -76,12 +83,7 @@ public class PremiumMember extends GymMember {
         this.discountAmount = 0;
         this.paidAmount = 0;
     }
-
-    @Override
-    public void markAttendance() {
-
-    }
-
+    // method which displays data
     public void display(){
         super.display();
         System.out.println("Personal Trainer:- " + personalTrainer);
@@ -93,7 +95,6 @@ public class PremiumMember extends GymMember {
             double remainingAmount = premiumCharge - this.paidAmount;
             System.out.println("You Have Due " + remainingAmount + " Please Pay Money.");
         }
-
     }
 }
 

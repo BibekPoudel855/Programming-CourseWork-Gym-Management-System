@@ -1,6 +1,9 @@
 public abstract class GymMember {
-//    class Instance variables
+    //    class Instance variables
+    protected boolean activeStatus;
     protected int id;
+    protected int attendance;
+    protected double loyaltyPoints;
     protected String DOB;
     protected String name;
     protected String location;
@@ -8,9 +11,6 @@ public abstract class GymMember {
     protected String email;
     protected String gender;
     protected String membershipStartDate;
-    protected int attendance;
-    protected double loyaltyPoints;
-    protected boolean activeStatus;
     // Constructor
     public GymMember(int id, String name, String location, String phone, String email, String gender, String DOB, String membershipStartDate) {
         this.id = id;
@@ -25,8 +25,51 @@ public abstract class GymMember {
         this.attendance = 0;
         this.activeStatus = false;
     }
+
     // abstract method Mark Attendance
     public abstract void markAttendance();
+
+    //    getter Methods of all instance variables
+    public int getId() {
+        return id;
+    }
+
+    public String getDOB() {
+        return DOB;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {return email;}
+    public String getGender() {
+        return gender;
+    }
+
+    public String getMembershipStartDate() {
+        return membershipStartDate;
+    }
+
+    public int getAttendance() {
+        return attendance;
+    }
+
+    public double getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    public boolean isActiveStatus() {
+        return activeStatus;
+    }
 
     // activateMembership() method sets activeStatus to true when the membership needs to be activated or renewed
     public void activateMembership(){
@@ -48,50 +91,6 @@ public abstract class GymMember {
         this.activeStatus = false;
         this.attendance = 0;
         this.loyaltyPoints = 0;
-    }
-//    getter Methods
-    public int getId() {
-        return id;
-    }
-
-    public String getDOB() {
-        return DOB;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public String getMembershipStartDate() {
-        return membershipStartDate;
-    }
-
-    public int getAttendance() {
-        return attendance;
-    }
-
-    public double getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
-
-    public boolean isActiveStatus() {
-        return activeStatus;
     }
 
     //  display method shows member all details
