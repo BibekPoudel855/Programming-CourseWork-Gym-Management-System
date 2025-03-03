@@ -64,7 +64,37 @@ public class PremiumMember extends GymMember {
         if(this.isFullPayment){
             this.discountAmount = premiumCharge * 10 / 100;
             System.out.println("You Got" + this.discountAmount + "% Discount.");
+        }else{
+            System.out.println("You Cannot get any Discount.");
         }
     }
+
+    public void revertPremiumMember(){
+        super.resetMember();
+        this.personalTrainer = "";
+        this.isFullPayment = false;
+        this.discountAmount = 0;
+        this.paidAmount = 0;
+    }
+
+    @Override
+    public void markAttendance() {
+
+    }
+
+    public void display(){
+        super.display();
+        System.out.println("Personal Trainer:- " + personalTrainer);
+        System.out.println("Paid Amount:- " + paidAmount);
+        if (isFullPayment) {
+            System.out.println("You Paid Full Payment.");
+            System.out.println("Discount Amount:- " + discountAmount);
+        }else{
+            double remainingAmount = premiumCharge - this.paidAmount;
+            System.out.println("You Have Due " + remainingAmount + " Please Pay Money.");
+        }
+
+    }
 }
+
 
