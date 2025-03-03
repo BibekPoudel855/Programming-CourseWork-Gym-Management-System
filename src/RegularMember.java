@@ -27,9 +27,7 @@ public class RegularMember extends GymMember{
         this.loyaltyPoints += 5;
         this.attendance++;
 
-        if(getAttendance() >= attendanceLimit){
-            this.isEligibleForUpgrade = true;
-        }
+        checkEligibilityForUpgrade();
     }
 
     // getter methods
@@ -56,7 +54,12 @@ public class RegularMember extends GymMember{
     public double getPrice() {
         return price;
     }
-
+    // Method which keep isEligibleForUpgrade true when attendance reach limit
+    public void checkEligibilityForUpgrade(){
+        if(getAttendance() >= attendanceLimit){
+            this.isEligibleForUpgrade = true;
+        }
+    }
     // method that returns plan price based on price of plan
     public double getPlanPrice(String plan){
         plan = plan.toLowerCase();
@@ -72,6 +75,9 @@ public class RegularMember extends GymMember{
     }
     // method which upgrade or changes user current plan
     public String upgradePlan(String plan){
+        // checking if the use is eligible or not
+        checkEligibilityForUpgrade();
+
         if(this.plan.toLowerCase().equals(plan.toLowerCase())){
             return "Same Plan Selected";
         }
@@ -95,6 +101,7 @@ public class RegularMember extends GymMember{
         this.plan = "basic";
         this.price = 6500;
         this.removalReason = removalReason;
+        System.out.println("Member Revert Complete");
     }
 
     // method which displays data & it is overrides method of parent class

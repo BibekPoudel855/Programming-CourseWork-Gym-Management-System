@@ -82,7 +82,7 @@ public abstract class GymMember {
             this.activeStatus = false;
             System.out.println(id + "Member Deactivated");
         }else{
-            System.out.println(id + "Member Already Activated");
+            System.out.println(id + "Member Already Deactivated");
         }
     }
 
@@ -91,6 +91,7 @@ public abstract class GymMember {
         this.activeStatus = false;
         this.attendance = 0;
         this.loyaltyPoints = 0;
+        System.out.println("Member Reset Complete");
     }
 
     //  display method shows member all details

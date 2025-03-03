@@ -62,15 +62,19 @@ public class PremiumMember extends GymMember {
         if(isFullPayment){
         return "You Sucessfully Paid " + paidAmount + ".";
         }else{
-            double remainingAmount = premiumCharge - this.paidAmount;
-            return "You Sucessfully Paid " + paidAmount + " Your Due Amount is" + remainingAmount + ".";
+           return "You Paid " + paidAmount +  "and" + calculateRemainingAmount();
         }
+    }
+    // method which calculate remaining
+    public String calculateRemainingAmount(){
+        double remainingAmount = premiumCharge - this.paidAmount;
+        return "Your Due Amount is" + remainingAmount + ".";
     }
     // method which calculate discount based on payment made by user
     public void calculateDiscount(){
         if(this.isFullPayment){
             this.discountAmount = premiumCharge * 10 / 100;
-            System.out.println("You Got" + this.discountAmount + "% Discount.");
+            System.out.println("You Got" + this.discountAmount + " Discount.");
         }else{
             System.out.println("You Cannot get any Discount.");
         }
@@ -82,6 +86,7 @@ public class PremiumMember extends GymMember {
         this.isFullPayment = false;
         this.discountAmount = 0;
         this.paidAmount = 0;
+        System.out.println("Member Revert Complete");
     }
     // method which displays data
     public void display(){
@@ -92,8 +97,7 @@ public class PremiumMember extends GymMember {
             System.out.println("You Paid Full Payment.");
             System.out.println("Discount Amount:- " + discountAmount);
         }else{
-            double remainingAmount = premiumCharge - this.paidAmount;
-            System.out.println("You Have Due " + remainingAmount + " Please Pay Money.");
+            System.out.println(calculateRemainingAmount());
         }
     }
 }
