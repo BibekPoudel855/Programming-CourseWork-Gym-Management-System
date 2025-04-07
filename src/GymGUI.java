@@ -13,7 +13,7 @@ public class GymGUI {
     
     
     // color variable
-    private Color buttonColor = new Color(0, 120, 215);
+    private Color buttonColor = new Color(65, 102, 213);
     //  font variable
     private final Font MAIN_FONT = new Font("Arial", Font.PLAIN, 18);
 
@@ -21,7 +21,7 @@ public class GymGUI {
     public GymGUI() {
         makeMainFrame();
     }
-
+// method which creates frame
     private void makeMainFrame() {
         // create main frame
         frame = new JFrame("Giant Gym Management System");
@@ -45,11 +45,12 @@ public class GymGUI {
         frame.setVisible(true);
     }
 
+    // method which create input panels
     private JPanel createInputPanel() {
         // creating input panel in grid layout row and column
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(0, 2, 5, 5));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("Personal Details"));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Input Fields"));
 
         // creating and adding input fields
         idField = createInputField(inputPanel, "ID :");
@@ -84,22 +85,21 @@ public class GymGUI {
 
         // adding gender panel to input panel
         inputPanel.add(genderPanel);
-        // Membership Details
+        // membership details input field
         membershipStartField = createInputField(inputPanel, "Membership Start Date ");
         referralSourceField = createInputField(inputPanel, "Referral Source");
         trainerNameField = createInputField(inputPanel, "Trainer Name ");
 
-        // Plan Selection
+        // combobox input field
         String[] planOptions = {"Basic", "Standard", "Deluxe"};
         inputPanel.add(new JLabel("Select Plan :"));
         planComboBox = new JComboBox<>(planOptions);
         inputPanel.add(planComboBox);
 
-        // Payment and Removal
         paidAmountField = createInputField(inputPanel, "Paid Amount :");
         removalReasonField = createInputField(inputPanel, "Removal Reason:");
 
-        // Pricing Information
+        // price details
         regularPriceField = createInputField(inputPanel, "Regular Plan Price:");
         regularPriceField.setText("6500");
         regularPriceField.setEditable(false);
@@ -114,7 +114,7 @@ public class GymGUI {
 
         return inputPanel;
     }
-
+// method which create input fields
     private JTextField createInputField(JPanel panel, String labelText) {
         JLabel inputLabel = new JLabel(labelText);
         inputLabel.setFont(MAIN_FONT);
@@ -127,12 +127,13 @@ public class GymGUI {
         return inputTextField;
     }
 
+    // method which create buttons
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(0, 1, 5, 5));
-        buttonPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
+        buttonPanel.setBorder(BorderFactory.createTitledBorder("Buttons"));
 
-        // Add buttons
+        // adding buttons
         addRegularButton = createButton(buttonPanel, "Add Regular Member");
         addPremiumButton = createButton(buttonPanel, "Add Premium Member");
 
@@ -147,12 +148,11 @@ public class GymGUI {
         clearButton = createButton(buttonPanel, "Clear");
         saveToFileButton = createButton(buttonPanel, "Save to File");
         readFromFileButton = createButton(buttonPanel, "Read from File");
-        
-        
 
         return buttonPanel;
     }
 
+    // method which handles all buttons event
     private void addButtonEventListner() {
         // add regular member button event
         addRegularButton.addActionListener(e -> {
@@ -216,7 +216,7 @@ public class GymGUI {
         });
     }
 
-
+// method which create button
     private JButton createButton(JPanel panel, String text) {
         JButton button = new JButton(text);
         button.setBackground(buttonColor);
@@ -225,7 +225,7 @@ public class GymGUI {
         panel.add(button);
         return button;
     }
-
+// method which create display panel which is in center in ui
     private JPanel createDisplayPanel() {
         JPanel displayPanel = new JPanel();
         displayPanel.setLayout(new BorderLayout());
@@ -234,15 +234,16 @@ public class GymGUI {
         displayArea.setEditable(false);
         displayArea.setFont(MAIN_FONT);
 
-        displayPanel.setBorder(BorderFactory.createTitledBorder("Displaying Portal"));
+        displayPanel.setBorder(BorderFactory.createTitledBorder("Output"));
         // IT MAKE display area scrollable when overflow text 
         displayPanel.add(new JScrollPane(displayArea));
 
         return displayPanel;
     }
 
-
+    // entry main method
     public static void main(String[] args) {
+        // creating object if GymGUI
         new GymGUI();
     }
 }
