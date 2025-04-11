@@ -88,7 +88,7 @@ public class GymGUI {
         // membership details input field
         membershipStartField = createInputField(inputPanel, "Membership Start Date ");
         referralSourceField = createInputField(inputPanel, "Referral Source");
-        trainerNameField = createInputField(inputPanel, "Trainer Name ");
+        trainerNameField = createInputField(inputPanel, "Trainer Name");
 
         // combobox input field
         String[] planOptions = {"Basic", "Standard", "Deluxe"};
