@@ -1,27 +1,32 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GymGUI {
     // instance variables
     private JFrame frame;
-    private JTextField idField, nameField, locationField, phoneField, emailField, referralSourceField, trainerNameField, paidAmountField, removalReasonField, regularPriceField, premiumChargeField, discountField;
+    private JTextField idField, nameField, locationField, phoneField, emailField, referralSourceField, trainerNameField,
+            paidAmountField, removalReasonField, regularPriceField, premiumChargeField, discountField;
     private JRadioButton maleRadio, femaleRadio;
     private JComboBox<String> planComboBox;
     private JTextArea displayArea;
-    private JButton addRegularButton, addPremiumButton, activateMembershipButton, deactivateMembershipButton, markAttendanceButton, upgradePlanButton, calculateDiscountButton, revertMemberButton, payDueAmountButton, displayButton, clearButton, saveToFileButton, readFromFileButton;
+    private JButton addRegularButton, addPremiumButton, activateMembershipButton, deactivateMembershipButton,
+            markAttendanceButton, upgradePlanButton, calculateDiscountButton, payDueAmountButton,
+            displayButton, clearButton, saveToFileButton, readFromFileButton, revertRegularMemberButton,
+            revertPremiumMemberButton;
     private JComboBox<String> dobDayComboBox, dobMonthComboBox, dobYearComboBox;
     private JComboBox<String> msStartDayComboBox, msStartMonthComboBox, msStartYearComboBox;
 
+    // Arraylist to store member details
+    private ArrayList<GymMember> memberList = new ArrayList<>();
     // color variable
     private Color buttonColor = new Color(65, 102, 213);
     // font variable
     private final Font MAIN_FONT = new Font("Arial", Font.PLAIN, 18);
-
     // constructor to make GUI
     public GymGUI() {
         makeMainFrame();
     }
-
     // method which creates frame
     private void makeMainFrame() {
         // create main frame
@@ -60,9 +65,10 @@ public class GymGUI {
         phoneField = createInputField(inputPanel, "Phone :");
         emailField = createInputField(inputPanel, "Email:");
 
-        /* creating gender label and gender radio button like male and female
-           and adding them to the input panel
-           we added genderPanel because we want to add two radio buttons in one line
+        /*
+         * creating gender label and gender radio button like male and female
+         * and adding them to the input panel
+         * we added genderPanel because we want to add two radio buttons in one line
          */
         JLabel genderLabel = new JLabel("Gender :");
         genderLabel.setFont(MAIN_FONT);
@@ -94,7 +100,7 @@ public class GymGUI {
         JPanel dobPanel = new JPanel(new FlowLayout());
         String[] days = generateDays();
         String[] years = generateYears(1900, 2025);
-        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
         dobDayComboBox = new JComboBox<>(days);
         dobMonthComboBox = new JComboBox<>(months);
@@ -134,7 +140,7 @@ public class GymGUI {
         trainerNameField = createInputField(inputPanel, "Trainer Name");
 
         // combobox input field
-        String[] planOptions = {"Basic", "Standard", "Deluxe"};
+        String[] planOptions = { "Basic", "Standard", "Deluxe" };
         JLabel planLabel = new JLabel("Select Plan :");
         planLabel.setFont(MAIN_FONT);
         inputPanel.add(planLabel);
@@ -165,17 +171,18 @@ public class GymGUI {
     public String[] generateDays() {
         String[] days = new String[31];
         for (int i = 0; i < 31; i++) {
-            days[i] = String.valueOf(i + 1); 
+            days[i] = String.valueOf(i + 1);
         }
         System.out.println(days[days.length - 1]);
         return days;
     }
 
-    // method which generate years and return string array by method String.valueOf()
+    // method which generate years and return string array by method
+    // String.valueOf()
     public String[] generateYears(int fromYear, int toYear) {
         String[] years = new String[toYear - fromYear + 1];
         for (int i = 0; i < years.length; i++) {
-            years[i] = String.valueOf(fromYear + i); 
+            years[i] = String.valueOf(fromYear + i);
         }
         System.out.println(years[years.length - 1]);
         return years;
@@ -209,7 +216,8 @@ public class GymGUI {
         markAttendanceButton = createButton(buttonPanel, "Mark Attendance");
         upgradePlanButton = createButton(buttonPanel, "Upgrade Plan");
         calculateDiscountButton = createButton(buttonPanel, "Calculate Discount");
-        revertMemberButton = createButton(buttonPanel, "Revert Member");
+        revertRegularMemberButton = createButton(buttonPanel, "Revert Regular Member");
+        revertPremiumMemberButton = createButton(buttonPanel, "Revert Premium Member");
         payDueAmountButton = createButton(buttonPanel, "Pay Due Amount");
         displayButton = createButton(buttonPanel, "Display");
         clearButton = createButton(buttonPanel, "Clear");
@@ -221,66 +229,303 @@ public class GymGUI {
 
     // method which handles all buttons event
     private void addButtonEventListner() {
-        // add regular member button event
+        // Add Regular Member button event
         addRegularButton.addActionListener(e -> {
-            System.out.println("Add Regular Member button clicked");
+            try {
+                // Validating fields
+                if (idField.getText().isEmpty() || nameField.getText().isEmpty() ||
+                        locationField.getText().isEmpty() || phoneField.getText().isEmpty() ||
+                        (!maleRadio.isSelected() && !femaleRadio.isSelected()) ||
+                        referralSourceField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Input is Empty");
+                    return;
+                }
+
+                int id = Integer.parseInt(idField.getText());
+                if (findMemberById(id) != null) {
+                    JOptionPane.showMessageDialog(frame, "Member ID Duplicate");
+                    return;
+                }
+
+                String gender = maleRadio.isSelected() ? "Male" : "Female";
+                String dob = dobDayComboBox.getSelectedItem() + "/" +
+                        dobMonthComboBox.getSelectedItem() + "/" +
+                        dobYearComboBox.getSelectedItem();
+                String startDate = msStartDayComboBox.getSelectedItem() + "/" +
+                        msStartMonthComboBox.getSelectedItem() + "/" +
+                        msStartYearComboBox.getSelectedItem();
+
+                RegularMember member = new RegularMember(
+                        id, nameField.getText(), locationField.getText(),
+                        phoneField.getText(), emailField.getText(), gender,
+                        dob, startDate, referralSourceField.getText());
+                // Adding member to the list
+                memberList.add(member);
+                JOptionPane.showMessageDialog(frame, "Regular member added successfully");
+            } catch (Exception ex) { // Catching all exceptions
+                JOptionPane.showMessageDialog(frame, "An error occurred: ");
+            }
         });
 
-        // add premium member button event
+        // Add Premium Member button event
         addPremiumButton.addActionListener(e -> {
-            // Add logic for adding a premium member
-            System.out.println("Add Premium Member button clicked");
+            try {
+                // Validate required fields
+                if (idField.getText().isEmpty() || nameField.getText().isEmpty() ||
+                        locationField.getText().isEmpty() || phoneField.getText().isEmpty() ||
+                        (!maleRadio.isSelected() && !femaleRadio.isSelected()) ||
+                        trainerNameField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Input field empty");
+                    return;
+                }
+
+                int id = Integer.parseInt(idField.getText());
+                if (findMemberById(id) != null) {
+                    JOptionPane.showMessageDialog(frame, "Member ID Duplicate");
+                    return;
+                }
+
+                String gender = maleRadio.isSelected() ? "Male" : "Female";
+                String dob = dobDayComboBox.getSelectedItem() + "/" +
+                        dobMonthComboBox.getSelectedItem() + "/" +
+                        dobYearComboBox.getSelectedItem();
+                String startDate = msStartDayComboBox.getSelectedItem() + "/" +
+                        msStartMonthComboBox.getSelectedItem() + "/" +
+                        msStartYearComboBox.getSelectedItem();
+
+                PremiumMember member = new PremiumMember(
+                        id, nameField.getText(), locationField.getText(),
+                        phoneField.getText(), emailField.getText(), gender,
+                        dob, startDate, trainerNameField.getText());
+
+                memberList.add(member);
+                JOptionPane.showMessageDialog(frame, "Premium member added successfully");
+            } catch (Exception ex) { // Catching all exceptions
+                JOptionPane.showMessageDialog(frame, "An error occurred: ");
+            }
         });
 
-        // activate membership button event
+        // Activate Membership button event
         activateMembershipButton.addActionListener(e -> {
-            System.out.println("Activate Membership button clicked");
+            try {
+                int id = Integer.parseInt(idField.getText());
+                GymMember member = findMemberById(id);
+
+                if (member == null) {
+                    JOptionPane.showMessageDialog(frame, "Member not found");
+                    return;
+                }
+
+                member.activateMembership();
+                JOptionPane.showMessageDialog(frame, "Membership activated");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Something went wrong in ID");
+            }
         });
 
-        // deactivate membership button event
+        // Deactivate Membership button event
         deactivateMembershipButton.addActionListener(e -> {
-            System.out.println("Deactivate Membership button clicked");
+            try {
+                int id = Integer.parseInt(idField.getText());
+                GymMember member = findMemberById(id);
+
+                if (member == null) {
+                    JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                member.deactivateMembership();
+                JOptionPane.showMessageDialog(frame, "Membership deactivated");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Something went wrong in ID");
+            }
         });
 
-        // mark attendance button event
+        // Mark Attendance button event
         markAttendanceButton.addActionListener(e -> {
-            System.out.println("Mark Attendance button clicked");
+            try {
+                int id = Integer.parseInt(idField.getText());
+                GymMember member = findMemberById(id);
+
+                if (member == null) {
+                    JOptionPane.showMessageDialog(frame, "Member not found");
+                    return;
+                }
+
+                if (!member.isActiveStatus()) {
+                    JOptionPane.showMessageDialog(frame, "Member not active");
+                    return;
+                }
+
+                member.markAttendance();
+                JOptionPane.showMessageDialog(frame, "Attendance marked succesfully");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Something went wrong in ID");
+            }
         });
 
-        // upgrade plan button event
+        // Upgrade Plan button event
         upgradePlanButton.addActionListener(e -> {
-            System.out.println("Upgrade Plan button clicked");
+            JOptionPane.showMessageDialog(frame, "Coming Soon");
         });
 
-        // calculate discount button event
+        // Calculate Discount button event
         calculateDiscountButton.addActionListener(e -> {
-            System.out.println("Calculate Discount button clicked");
+            JOptionPane.showMessageDialog(frame, "Coming Soon");
         });
 
-        // revert member button event
-        revertMemberButton.addActionListener(e -> {
-            System.out.println("Revert Member button clicked");
-        });
-
-        // pay due amount button event
+        // Pay Due Amount button event
         payDueAmountButton.addActionListener(e -> {
-            System.out.println("Pay Due Amount button clicked");
+            JOptionPane.showMessageDialog(frame, "Coming Soon");
         });
 
-        // display button event
+        // Revert Regular Member button event
+        revertRegularMemberButton.addActionListener(e -> {
+            try {
+                if(idField.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(frame, "ID empty");
+                    return;
+                }
+                int id = Integer.parseInt(idField.getText());
+                GymMember member = findMemberById(id);
+
+                if (member == null || !(member instanceof RegularMember)) {
+                    JOptionPane.showMessageDialog(frame, "Current Id member is not Regular Member");
+                    return;
+                }
+
+                String reason = removalReasonField.getText();
+                ((RegularMember) member).revertRegularMember(reason);
+                memberList.remove(member);
+                JOptionPane.showMessageDialog(frame, "Regular Member reverted successfully");
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Something went wrong in ID", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Revert Premium Member button event
+        revertPremiumMemberButton.addActionListener(e -> {
+            try {
+                if(idField.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(frame, "ID empty");
+                    return;
+                }
+                int id = Integer.parseInt(idField.getText());
+                GymMember member = findMemberById(id);
+
+                if (member == null || !(member instanceof PremiumMember)) {
+                    JOptionPane.showMessageDialog(frame, "Current Id member is not Regular Member");
+                    return;
+                }
+
+                ((PremiumMember) member).revertPremiumMember();
+                memberList.remove(member);
+                JOptionPane.showMessageDialog(frame, "Premium Member reverted successfully");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Something went wrong in ID", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        // Display button event
         displayButton.addActionListener(e -> {
-            System.out.println("Display button clicked");
+            if (memberList.isEmpty()) {
+                displayArea.setText("Members not found");
+                return;
+            }
+
+            String output = "";
+            for (GymMember member : memberList) {
+                output += "______________________________________________\n";
+                output += "Member ID: " + member.getId() + "\n";
+                output += "Name: " + member.getName() + "\n";
+                if (member instanceof PremiumMember) {
+                    output += "Type : Premium \n";
+                } else {
+                    output += "Type : Regular \n";
+                }
+                output += "Location: " + member.getLocation() + "\n";
+                output += "Phone: " + member.getPhone() + "\n";
+                output += "Email: " + member.getEmail() + "\n";
+                output += "Gender: " + member.getGender() + "\n";
+                output += "Date of Birth: " + member.getDOB() + "\n";
+                output += "Membership Start Date: " + member.getMembershipStartDate() + "\n";
+                if (member.isActiveStatus()) {
+                    output += "Status: Active \n";
+                } else {
+                    output += "Status: Inactive \n";
+                }
+                output += "Attendance: " + member.getAttendance() + "\n";
+                output += "Loyalty Points: " + member.getLoyaltyPoints() + "\n";
+
+                if (member instanceof RegularMember) {
+                    RegularMember regMember = (RegularMember) member;
+                    output += "Plan: " + regMember.getPlan() + "\n";
+                    output += "Price: " + regMember.getPrice() + "\n";
+                    output += "Referral Source: " + regMember.getReferralSource() + "\n";
+                    if (!regMember.getRemovalReason().isEmpty()) {
+                        output += "Removal Reason: " + regMember.getRemovalReason() + "\n";
+                    }
+                } else if (member instanceof PremiumMember) {
+                    PremiumMember premMember = (PremiumMember) member;
+                    output += "Personal Trainer: " + premMember.getPersonalTrainer() + "\n";
+                    output += "Payment: " + premMember.getPaidAmount() + "/" + premMember.getPremiumCharge() + "\n";
+                    output += "Discount: " + premMember.getDiscountAmount() + "\n";
+                }
+                output += "\n";
+            }
+            displayArea.setText(output);
         });
 
-        // clear button event
-        clearButton.addActionListener(e -> {
-            System.out.println("Clear button clicked");
-        });
+        // Clear button event
+        clearButton.addActionListener(e -> clearInputFields());
 
-        // save to File button event
+        // Save to File button event (to be implemented)
         saveToFileButton.addActionListener(e -> {
-            System.out.println("Save to File button clicked");
+            JOptionPane.showMessageDialog(frame, "Coming Soon");
         });
+
+        // Read from File button event (to be implemented)
+        readFromFileButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "Coming Soon");
+        });
+    }
+
+    // method which find member by id
+    private GymMember findMemberById(int id) {
+        for (GymMember member : memberList) {
+            if (member.getId() == id) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    // method which clears all input fields
+    private void clearInputFields() {
+        // clearing text fields
+        idField.setText("");
+        nameField.setText("");
+        locationField.setText("");
+        phoneField.setText("");
+        emailField.setText("");
+        referralSourceField.setText("");
+        trainerNameField.setText("");
+        paidAmountField.setText("");
+        removalReasonField.setText("");
+
+        // uncheking radio buttons
+        maleRadio.setSelected(false);
+        femaleRadio.setSelected(false);
+
+        // reseting comboboxex
+        dobDayComboBox.setSelectedIndex(0);
+        dobMonthComboBox.setSelectedIndex(0);
+        dobYearComboBox.setSelectedIndex(0);
+        msStartDayComboBox.setSelectedIndex(0);
+        msStartMonthComboBox.setSelectedIndex(0);
+        msStartYearComboBox.setSelectedIndex(0);
+        // clearing display section
+        displayArea.setText("");
     }
 
     // method which create button
@@ -298,13 +543,14 @@ public class GymGUI {
         JPanel displayPanel = new JPanel();
         displayPanel.setLayout(new BorderLayout());
 
-        JTextArea displayArea = new JTextArea();
+        // Initialize the instance variable displayArea
+        displayArea = new JTextArea();
         displayArea.setEditable(false);
         displayArea.setFont(MAIN_FONT);
 
         displayPanel.setBorder(BorderFactory.createTitledBorder("Output"));
-        // IT MAKE display area scrollable when overflow text
-        displayPanel.add(new JScrollPane(displayArea));
+        // Make display area scrollable when overflow text
+        displayPanel.add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
         return displayPanel;
     }
