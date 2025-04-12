@@ -19,7 +19,10 @@ public class PremiumMember extends GymMember {
     // implementation of markAttendance() method which is abstract in GymMember Class
     @Override
     public void markAttendance() {
-
+        if (this.isActiveStatus()) {
+            this.attendance++;
+            this.loyaltyPoints += 10;
+        }
     }
     // getter methods of all instance variables
     public double getPremiumCharge() {

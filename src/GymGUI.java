@@ -96,7 +96,7 @@ public class GymGUI {
         JLabel dobLabel = new JLabel("DOB :");
         dobLabel.setFont(MAIN_FONT);
         inputPanel.add(dobLabel);
-
+        // dob panel 
         JPanel dobPanel = new JPanel(new FlowLayout());
         String[] days = generateDays();
         String[] years = generateYears(1900, 2025);
@@ -116,7 +116,7 @@ public class GymGUI {
 
         inputPanel.add(dobPanel);
 
-        // Membership Start Date field with ComboBoxes
+        // member start date panel
         JLabel msStartLabel = new JLabel("Membership Start Date :");
         msStartLabel.setFont(MAIN_FONT);
         inputPanel.add(msStartLabel);
@@ -136,6 +136,7 @@ public class GymGUI {
 
         inputPanel.add(msStartPanel);
 
+        // referral source and trainer name fields
         referralSourceField = createInputField(inputPanel, "Referral Source");
         trainerNameField = createInputField(inputPanel, "Trainer Name");
 
@@ -148,6 +149,7 @@ public class GymGUI {
         planComboBox.setFont(MAIN_FONT);
         inputPanel.add(planComboBox);
 
+        // paid amount and removal reason fields
         paidAmountField = createInputField(inputPanel, "Paid Amount :");
         removalReasonField = createInputField(inputPanel, "Removal Reason:");
 
@@ -156,14 +158,17 @@ public class GymGUI {
         regularPriceField.setText("6500");
         regularPriceField.setEditable(false);
 
+        // premium charge details
         premiumChargeField = createInputField(inputPanel, "Premium Plan Charge:");
         premiumChargeField.setText("50000");
         premiumChargeField.setEditable(false);
 
+        // discount amount details
         discountField = createInputField(inputPanel, "Discount Amount:");
         discountField.setText("0");
         discountField.setEditable(false);
 
+        // return inputPanel to main frame
         return inputPanel;
     }
 
@@ -207,10 +212,10 @@ public class GymGUI {
         buttonPanel.setLayout(new GridLayout(0, 1, 5, 5));
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Buttons"));
 
-        // adding buttons
+        // calling createButton method to create buttons
+        // and adding them to the button panel
         addRegularButton = createButton(buttonPanel, "Add Regular Member");
         addPremiumButton = createButton(buttonPanel, "Add Premium Member");
-
         activateMembershipButton = createButton(buttonPanel, "Activate Membership");
         deactivateMembershipButton = createButton(buttonPanel, "Deactivate Membership");
         markAttendanceButton = createButton(buttonPanel, "Mark Attendance");
@@ -237,16 +242,16 @@ public class GymGUI {
                         locationField.getText().isEmpty() || phoneField.getText().isEmpty() ||
                         (!maleRadio.isSelected() && !femaleRadio.isSelected()) ||
                         referralSourceField.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Input is Empty");
+                    JOptionPane.showMessageDialog(frame, "Input field is Empty");
                     return;
                 }
-
+                // converting id because parent class GymMember has id as int
                 int id = Integer.parseInt(idField.getText());
                 if (findMemberById(id) != null) {
                     JOptionPane.showMessageDialog(frame, "Member ID Duplicate");
                     return;
                 }
-
+                // extracting value of below variable 
                 String gender = maleRadio.isSelected() ? "Male" : "Female";
                 String dob = dobDayComboBox.getSelectedItem() + "/" +
                         dobMonthComboBox.getSelectedItem() + "/" +
@@ -278,13 +283,13 @@ public class GymGUI {
                     JOptionPane.showMessageDialog(frame, "Input field empty");
                     return;
                 }
-
+                // converting id to int because parent class GymMember has id as int
                 int id = Integer.parseInt(idField.getText());
                 if (findMemberById(id) != null) {
                     JOptionPane.showMessageDialog(frame, "Member ID Duplicate");
                     return;
                 }
-
+                // extraxting value of below variable
                 String gender = maleRadio.isSelected() ? "Male" : "Female";
                 String dob = dobDayComboBox.getSelectedItem() + "/" +
                         dobMonthComboBox.getSelectedItem() + "/" +
@@ -297,7 +302,7 @@ public class GymGUI {
                         id, nameField.getText(), locationField.getText(),
                         phoneField.getText(), emailField.getText(), gender,
                         dob, startDate, trainerNameField.getText());
-
+                // adding to arraylist 
                 memberList.add(member);
                 JOptionPane.showMessageDialog(frame, "Premium member added successfully");
             } catch (Exception ex) { // Catching all exceptions
@@ -395,6 +400,10 @@ public class GymGUI {
                 }
 
                 String reason = removalReasonField.getText();
+                if(reason.isEmpty()) {
+                    reason= "Not Provided";
+                }
+                // calling revertRegularMember method of RegularMember class
                 ((RegularMember) member).revertRegularMember(reason);
                 memberList.remove(member);
                 JOptionPane.showMessageDialog(frame, "Regular Member reverted successfully");
@@ -415,10 +424,10 @@ public class GymGUI {
                 GymMember member = findMemberById(id);
 
                 if (member == null || !(member instanceof PremiumMember)) {
-                    JOptionPane.showMessageDialog(frame, "Current Id member is not Regular Member");
+                    JOptionPane.showMessageDialog(frame, "Current Id member is not Premium Member");
                     return;
                 }
-
+                //calling revertPremiumMember method of PremiumMember class
                 ((PremiumMember) member).revertPremiumMember();
                 memberList.remove(member);
                 JOptionPane.showMessageDialog(frame, "Premium Member reverted successfully");
@@ -432,44 +441,43 @@ public class GymGUI {
                 displayArea.setText("Members not found");
                 return;
             }
-
             String output = "";
             for (GymMember member : memberList) {
                 output += "______________________________________________\n";
-                output += "Member ID: " + member.getId() + "\n";
-                output += "Name: " + member.getName() + "\n";
+                output += "Member ID:   " + member.getId() + "\n";
+                output += "Name:   " + member.getName() + "\n";
                 if (member instanceof PremiumMember) {
                     output += "Type : Premium \n";
                 } else {
                     output += "Type : Regular \n";
                 }
-                output += "Location: " + member.getLocation() + "\n";
-                output += "Phone: " + member.getPhone() + "\n";
-                output += "Email: " + member.getEmail() + "\n";
-                output += "Gender: " + member.getGender() + "\n";
-                output += "Date of Birth: " + member.getDOB() + "\n";
-                output += "Membership Start Date: " + member.getMembershipStartDate() + "\n";
+                output += "Location:   " + member.getLocation() + "\n";
+                output += "Phone:    " + member.getPhone() + "\n";
+                output += "Email:  " + member.getEmail() + "\n";
+                output += "Gender:   " + member.getGender() + "\n";
+                output += "Date of Birth:   " + member.getDOB() + "\n";
+                output += "Membership Start Date:  " + member.getMembershipStartDate() + "\n";
                 if (member.isActiveStatus()) {
-                    output += "Status: Active \n";
+                    output += "Status:  Active \n";
                 } else {
-                    output += "Status: Inactive \n";
+                    output += "Status:  Inactive \n";
                 }
-                output += "Attendance: " + member.getAttendance() + "\n";
-                output += "Loyalty Points: " + member.getLoyaltyPoints() + "\n";
+                output += "Attendance:   " + member.getAttendance() + "\n";
+                output += "Loyalty Points:   " + member.getLoyaltyPoints() + "\n";
 
                 if (member instanceof RegularMember) {
                     RegularMember regMember = (RegularMember) member;
-                    output += "Plan: " + regMember.getPlan() + "\n";
-                    output += "Price: " + regMember.getPrice() + "\n";
-                    output += "Referral Source: " + regMember.getReferralSource() + "\n";
+                    output += "Plan:   " + regMember.getPlan() + "\n";
+                    output += "Price:  " + regMember.getPrice() + "\n";
+                    output += "Referral Source:  " + regMember.getReferralSource() + "\n";
                     if (!regMember.getRemovalReason().isEmpty()) {
-                        output += "Removal Reason: " + regMember.getRemovalReason() + "\n";
+                        output += "Removal Reason:   " + regMember.getRemovalReason() + "\n";
                     }
                 } else if (member instanceof PremiumMember) {
                     PremiumMember premMember = (PremiumMember) member;
-                    output += "Personal Trainer: " + premMember.getPersonalTrainer() + "\n";
-                    output += "Payment: " + premMember.getPaidAmount() + "/" + premMember.getPremiumCharge() + "\n";
-                    output += "Discount: " + premMember.getDiscountAmount() + "\n";
+                    output += "Personal Trainer:  " + premMember.getPersonalTrainer() + "\n";
+                    output += "Payment:   " + premMember.getPaidAmount() + "/" + premMember.getPremiumCharge() + "\n";
+                    output += "Discount:  " + premMember.getDiscountAmount() + "\n";
                 }
                 output += "\n";
             }
