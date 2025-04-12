@@ -9,6 +9,7 @@ public class GymGUI {
             paidAmountField, removalReasonField, regularPriceField, premiumChargeField, discountField;
     private JRadioButton maleRadio, femaleRadio;
     private JComboBox<String> planComboBox;
+    private ButtonGroup genderGroup;
     private JTextArea displayArea;
     private JButton addRegularButton, addPremiumButton, activateMembershipButton, deactivateMembershipButton,
             markAttendanceButton, upgradePlanButton, calculateDiscountButton, payDueAmountButton,
@@ -81,7 +82,7 @@ public class GymGUI {
         femaleRadio.setFont(MAIN_FONT);
 
         // kept in group because we make only one button can be selected at a time
-        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup = new ButtonGroup();
         // adding to group
         genderGroup.add(maleRadio);
         genderGroup.add(femaleRadio);
@@ -99,7 +100,7 @@ public class GymGUI {
         // dob panel 
         JPanel dobPanel = new JPanel(new FlowLayout());
         String[] days = generateDays();
-        String[] years = generateYears(1900, 2025);
+        String[] years = generateYears(1950, 2025);
         String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
         dobDayComboBox = new JComboBox<>(days);
@@ -117,6 +118,7 @@ public class GymGUI {
         inputPanel.add(dobPanel);
 
         // member start date panel
+        years = generateYears(2020, 2025);
         JLabel msStartLabel = new JLabel("Membership Start Date :");
         msStartLabel.setFont(MAIN_FONT);
         inputPanel.add(msStartLabel);
@@ -147,6 +149,7 @@ public class GymGUI {
         inputPanel.add(planLabel);
         planComboBox = new JComboBox<>(planOptions);
         planComboBox.setFont(MAIN_FONT);
+        planComboBox.addActionListener(e -> regularPlan()); // update price on selection
         inputPanel.add(planComboBox);
 
         // paid amount and removal reason fields
@@ -232,8 +235,21 @@ public class GymGUI {
         return buttonPanel;
     }
 
+    // method to update the price based on the selected plan
+    public void regularPlan() {
+        if (planComboBox.getSelectedIndex() == 0) {
+            regularPriceField.setText("6500.00");
+        } else if (planComboBox.getSelectedIndex() == 1) {
+            regularPriceField.setText("12500.00");
+        } else {
+            regularPriceField.setText("18500.00");
+        }
+    }
+
+
     // method which handles all buttons event
     private void addButtonEventListner() {
+        
         // Add Regular Member button event
         addRegularButton.addActionListener(e -> {
             try {
@@ -522,8 +538,7 @@ public class GymGUI {
         removalReasonField.setText("");
 
         // uncheking radio buttons
-        maleRadio.setSelected(false);
-        femaleRadio.setSelected(false);
+        genderGroup.clearSelection(); 
 
         // reseting comboboxex
         dobDayComboBox.setSelectedIndex(0);
