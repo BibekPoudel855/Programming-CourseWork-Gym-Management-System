@@ -135,8 +135,11 @@ public class GymGUI {
 
         // combobox input field
         String[] planOptions = {"Basic", "Standard", "Deluxe"};
-        inputPanel.add(new JLabel("Select Plan :"));
+        JLabel planLabel = new JLabel("Select Plan :");
+        planLabel.setFont(MAIN_FONT);
+        inputPanel.add(planLabel);
         planComboBox = new JComboBox<>(planOptions);
+        planComboBox.setFont(MAIN_FONT);
         inputPanel.add(planComboBox);
 
         paidAmountField = createInputField(inputPanel, "Paid Amount :");
