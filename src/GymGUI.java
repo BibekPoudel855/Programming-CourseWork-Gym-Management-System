@@ -4,24 +4,25 @@ import java.awt.*;
 public class GymGUI {
     // instance variables
     private JFrame frame;
-    private JTextField idField, nameField, locationField, phoneField, emailField, dobField;
+    private JTextField idField, nameField, locationField, phoneField, emailField, referralSourceField, trainerNameField, paidAmountField, removalReasonField, regularPriceField, premiumChargeField, discountField;
     private JRadioButton maleRadio, femaleRadio;
-    private JTextField membershipStartField, referralSourceField, trainerNameField, paidAmountField, removalReasonField,regularPriceField, premiumChargeField, discountField;
     private JComboBox<String> planComboBox;
     private JTextArea displayArea;
-    private JButton addRegularButton, addPremiumButton, activateMembershipButton, deactivateMembershipButton,markAttendanceButton, upgradePlanButton, calculateDiscountButton, revertMemberButton,payDueAmountButton, displayButton, clearButton,saveToFileButton, readFromFileButton;
-    
-    
+    private JButton addRegularButton, addPremiumButton, activateMembershipButton, deactivateMembershipButton, markAttendanceButton, upgradePlanButton, calculateDiscountButton, revertMemberButton, payDueAmountButton, displayButton, clearButton, saveToFileButton, readFromFileButton;
+    private JComboBox<String> dobDayComboBox, dobMonthComboBox, dobYearComboBox;
+    private JComboBox<String> msStartDayComboBox, msStartMonthComboBox, msStartYearComboBox;
+
     // color variable
     private Color buttonColor = new Color(65, 102, 213);
-    //  font variable
+    // font variable
     private final Font MAIN_FONT = new Font("Arial", Font.PLAIN, 18);
 
     // constructor to make GUI
     public GymGUI() {
         makeMainFrame();
     }
-// method which creates frame
+
+    // method which creates frame
     private void makeMainFrame() {
         // create main frame
         frame = new JFrame("Giant Gym Management System");
@@ -34,12 +35,12 @@ public class GymGUI {
         JPanel buttonPanel = createButtonPanel();
         JPanel displayPanel = createDisplayPanel();
 
-        // adding panels to the main frame in diferent positions
+        // adding panels to the main frame in different positions
         frame.add(inputPanel, BorderLayout.WEST);
         frame.add(buttonPanel, BorderLayout.EAST);
         frame.add(displayPanel, BorderLayout.CENTER);
 
-        // add event listeners to buttons 
+        // add event listeners to buttons
         addButtonEventListner();
         // making frame visible
         frame.setVisible(true);
@@ -58,11 +59,10 @@ public class GymGUI {
         locationField = createInputField(inputPanel, "Location :");
         phoneField = createInputField(inputPanel, "Phone :");
         emailField = createInputField(inputPanel, "Email:");
-        dobField = createInputField(inputPanel, "DOB :");
 
-        /* creating gender label and gender radion button like male and femae
+        /* creating gender label and gender radio button like male and female
            and adding them to the input panel
-           we added genderPanel becasue i want to add two radio buttons in one line
+           we added genderPanel because we want to add two radio buttons in one line
          */
         JLabel genderLabel = new JLabel("Gender :");
         genderLabel.setFont(MAIN_FONT);
@@ -73,8 +73,8 @@ public class GymGUI {
         maleRadio.setFont(MAIN_FONT);
         femaleRadio = new JRadioButton("Female");
         femaleRadio.setFont(MAIN_FONT);
-        
-        // kept in group because we make only one  button can be selected at a time
+
+        // kept in group because we make only one button can be selected at a time
         ButtonGroup genderGroup = new ButtonGroup();
         // adding to group
         genderGroup.add(maleRadio);
@@ -85,8 +85,51 @@ public class GymGUI {
 
         // adding gender panel to input panel
         inputPanel.add(genderPanel);
-        // membership details input field
-        membershipStartField = createInputField(inputPanel, "Membership Start Date ");
+
+        // DOB field with ComboBoxes
+        JLabel dobLabel = new JLabel("DOB :");
+        dobLabel.setFont(MAIN_FONT);
+        inputPanel.add(dobLabel);
+
+        JPanel dobPanel = new JPanel(new FlowLayout());
+        String[] days = generateDays();
+        String[] years = generateYears(1900, 2025);
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+        dobDayComboBox = new JComboBox<>(days);
+        dobMonthComboBox = new JComboBox<>(months);
+        dobYearComboBox = new JComboBox<>(years);
+
+        dobDayComboBox.setFont(MAIN_FONT);
+        dobMonthComboBox.setFont(MAIN_FONT);
+        dobYearComboBox.setFont(MAIN_FONT);
+
+        dobPanel.add(dobDayComboBox);
+        dobPanel.add(dobMonthComboBox);
+        dobPanel.add(dobYearComboBox);
+
+        inputPanel.add(dobPanel);
+
+        // Membership Start Date field with ComboBoxes
+        JLabel msStartLabel = new JLabel("Membership Start Date :");
+        msStartLabel.setFont(MAIN_FONT);
+        inputPanel.add(msStartLabel);
+
+        JPanel msStartPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        msStartDayComboBox = new JComboBox<>(days);
+        msStartMonthComboBox = new JComboBox<>(months);
+        msStartYearComboBox = new JComboBox<>(years);
+
+        msStartDayComboBox.setFont(MAIN_FONT);
+        msStartMonthComboBox.setFont(MAIN_FONT);
+        msStartYearComboBox.setFont(MAIN_FONT);
+
+        msStartPanel.add(msStartDayComboBox);
+        msStartPanel.add(msStartMonthComboBox);
+        msStartPanel.add(msStartYearComboBox);
+
+        inputPanel.add(msStartPanel);
+
         referralSourceField = createInputField(inputPanel, "Referral Source");
         trainerNameField = createInputField(inputPanel, "Trainer Name");
 
@@ -114,8 +157,29 @@ public class GymGUI {
 
         return inputPanel;
     }
-// method which create input fields
-    private JTextField createInputField(JPanel panel, String labelText) {
+
+    // method which generate day and return string array by method String.valueOf()
+    public String[] generateDays() {
+        String[] days = new String[31];
+        for (int i = 0; i < 31; i++) {
+            days[i] = String.valueOf(i + 1); 
+        }
+        System.out.println(days[days.length - 1]);
+        return days;
+    }
+
+    // method which generate years and return string array by method String.valueOf()
+    public String[] generateYears(int fromYear, int toYear) {
+        String[] years = new String[toYear - fromYear + 1];
+        for (int i = 0; i < years.length; i++) {
+            years[i] = String.valueOf(fromYear + i); 
+        }
+        System.out.println(years[years.length - 1]);
+        return years;
+    }
+
+    // method which create input fields
+    public JTextField createInputField(JPanel panel, String labelText) {
         JLabel inputLabel = new JLabel(labelText);
         inputLabel.setFont(MAIN_FONT);
         panel.add(inputLabel);
@@ -158,66 +222,66 @@ public class GymGUI {
         addRegularButton.addActionListener(e -> {
             System.out.println("Add Regular Member button clicked");
         });
-    
+
         // add premium member button event
         addPremiumButton.addActionListener(e -> {
             // Add logic for adding a premium member
             System.out.println("Add Premium Member button clicked");
         });
-    
+
         // activate membership button event
         activateMembershipButton.addActionListener(e -> {
             System.out.println("Activate Membership button clicked");
         });
-    
+
         // deactivate membership button event
         deactivateMembershipButton.addActionListener(e -> {
             System.out.println("Deactivate Membership button clicked");
         });
-    
+
         // mark attendance button event
         markAttendanceButton.addActionListener(e -> {
             System.out.println("Mark Attendance button clicked");
         });
-    
+
         // upgrade plan button event
         upgradePlanButton.addActionListener(e -> {
             System.out.println("Upgrade Plan button clicked");
         });
-    
+
         // calculate discount button event
         calculateDiscountButton.addActionListener(e -> {
             System.out.println("Calculate Discount button clicked");
         });
-    
+
         // revert member button event
         revertMemberButton.addActionListener(e -> {
             System.out.println("Revert Member button clicked");
         });
-    
+
         // pay due amount button event
         payDueAmountButton.addActionListener(e -> {
             System.out.println("Pay Due Amount button clicked");
         });
-    
+
         // display button event
         displayButton.addActionListener(e -> {
             System.out.println("Display button clicked");
         });
-    
+
         // clear button event
         clearButton.addActionListener(e -> {
             System.out.println("Clear button clicked");
         });
-    
+
         // save to File button event
         saveToFileButton.addActionListener(e -> {
             System.out.println("Save to File button clicked");
         });
     }
 
-// method which create button
-    private JButton createButton(JPanel panel, String text) {
+    // method which create button
+    public JButton createButton(JPanel panel, String text) {
         JButton button = new JButton(text);
         button.setBackground(buttonColor);
         button.setForeground(Color.WHITE);
@@ -225,8 +289,9 @@ public class GymGUI {
         panel.add(button);
         return button;
     }
-// method which create display panel which is in center in ui
-    private JPanel createDisplayPanel() {
+
+    // method which create display panel which is in center in ui
+    public JPanel createDisplayPanel() {
         JPanel displayPanel = new JPanel();
         displayPanel.setLayout(new BorderLayout());
 
@@ -235,7 +300,7 @@ public class GymGUI {
         displayArea.setFont(MAIN_FONT);
 
         displayPanel.setBorder(BorderFactory.createTitledBorder("Output"));
-        // IT MAKE display area scrollable when overflow text 
+        // IT MAKE display area scrollable when overflow text
         displayPanel.add(new JScrollPane(displayArea));
 
         return displayPanel;
