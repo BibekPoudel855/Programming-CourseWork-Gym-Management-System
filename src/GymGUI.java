@@ -1,3 +1,4 @@
+// importing 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -181,7 +182,6 @@ public class GymGUI {
         for (int i = 0; i < 31; i++) {
             days[i] = String.valueOf(i + 1);
         }
-        System.out.println(days[days.length - 1]);
         return days;
     }
 
@@ -192,7 +192,6 @@ public class GymGUI {
         for (int i = 0; i < years.length; i++) {
             years[i] = String.valueOf(fromYear + i);
         }
-        System.out.println(years[years.length - 1]);
         return years;
     }
 
@@ -261,6 +260,12 @@ public class GymGUI {
                     JOptionPane.showMessageDialog(frame, "Input field is Empty");
                     return;
                 }
+                if(Integer.parseInt(idField.getText())<= 0 || nameField.getText().length()<= 1 ||
+                        locationField.getText().length()<= 1 || phoneField.getText().length() != 10 ||
+                        referralSourceField.getText().length()<= 1){
+                    JOptionPane.showMessageDialog(frame, "Input valid data");
+                    return;
+                }
                 // converting id because parent class GymMember has id as int
                 int id = Integer.parseInt(idField.getText());
                 if (findMemberById(id) != null) {
@@ -282,8 +287,9 @@ public class GymGUI {
                         dob, startDate, referralSourceField.getText());
                 // Adding member to the list
                 memberList.add(member);
+                
                 JOptionPane.showMessageDialog(frame, "Regular member added successfully");
-            } catch (Exception ex) { // Catching all exceptions
+            } catch (NumberFormatException ex) { // Catching all exceptions
                 JOptionPane.showMessageDialog(frame, "An error occurred: ");
             }
         });
@@ -299,6 +305,13 @@ public class GymGUI {
                     JOptionPane.showMessageDialog(frame, "Input field empty");
                     return;
                 }
+                if(Integer.parseInt(idField.getText())<= 0 || nameField.getText().length()<= 1 ||
+                        locationField.getText().length()<= 1 || phoneField.getText().length() != 10 ||
+                        trainerNameField.getText().length()<= 1){
+                    JOptionPane.showMessageDialog(frame, "Input valid data");
+                    return;
+                }
+                
                 // converting id to int because parent class GymMember has id as int
                 int id = Integer.parseInt(idField.getText());
                 if (findMemberById(id) != null) {
@@ -321,7 +334,7 @@ public class GymGUI {
                 // adding to arraylist 
                 memberList.add(member);
                 JOptionPane.showMessageDialog(frame, "Premium member added successfully");
-            } catch (Exception ex) { // Catching all exceptions
+            } catch (NumberFormatException ex) { // Catching all exceptions
                 JOptionPane.showMessageDialog(frame, "An error occurred: ");
             }
         });
@@ -339,7 +352,7 @@ public class GymGUI {
 
                 member.activateMembership();
                 JOptionPane.showMessageDialog(frame, "Membership activated");
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Something went wrong in ID");
             }
         });
@@ -357,7 +370,7 @@ public class GymGUI {
 
                 member.deactivateMembership();
                 JOptionPane.showMessageDialog(frame, "Membership deactivated");
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Something went wrong in ID");
             }
         });
@@ -380,7 +393,7 @@ public class GymGUI {
 
                 member.markAttendance();
                 JOptionPane.showMessageDialog(frame, "Attendance marked succesfully");
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Something went wrong in ID");
             }
         });
@@ -424,7 +437,7 @@ public class GymGUI {
                 memberList.remove(member);
                 JOptionPane.showMessageDialog(frame, "Regular Member reverted successfully");
 
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Something went wrong in ID", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -447,7 +460,7 @@ public class GymGUI {
                 ((PremiumMember) member).revertPremiumMember();
                 memberList.remove(member);
                 JOptionPane.showMessageDialog(frame, "Premium Member reverted successfully");
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Something went wrong in ID", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
