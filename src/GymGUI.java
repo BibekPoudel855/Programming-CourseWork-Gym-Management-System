@@ -564,7 +564,7 @@ public class GymGUI {
         displayArea.setText("");
     }
 
-    // method which create button
+    // method which create buttonZ
     public JButton createButton(JPanel panel, String text) {
         JButton button = new JButton(text);
         button.setBackground(buttonColor);
