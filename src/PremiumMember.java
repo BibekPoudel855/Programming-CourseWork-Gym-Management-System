@@ -5,7 +5,7 @@ public class PremiumMember extends GymMember {
     double discountAmount;
     String personalTrainer;
     // final constant variable which is initialized in constructor
-    final double  premiumCharge;
+    final double premiumCharge;
     // Constructor
     public PremiumMember(int id, String name, String location, String phone,
                          String email, String gender, String DOB, String membershipStartDate, String personalTrainer) {
@@ -74,12 +74,12 @@ public class PremiumMember extends GymMember {
         return "Your Due Amount is" + remainingAmount + ".";
     }
     // method which calculate discount based on payment made by user
-    public void calculateDiscount(){
+    public String calculateDiscount(){
         if(this.isFullPayment){
             this.discountAmount = premiumCharge * 10 / 100;
-            System.out.println("You Got" + this.discountAmount + " Discount.");
+            return ("You Got " + this.discountAmount + " Discount.");
         }else{
-            System.out.println("You Cannot get any Discount.");
+            return ("You Cannot get any Discount. Pay Full Amount");
         }
     }
     // method which revert premium member

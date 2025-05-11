@@ -20,7 +20,6 @@ public class RegularMember extends GymMember{
         this.removalReason = "";
         this.referralSource = referralSource;
     }
-
     // Implementation of abstract method Mark Attendance
     @Override
     public void markAttendance(){
@@ -92,7 +91,7 @@ public class RegularMember extends GymMember{
 
         this.plan = plan.toLowerCase();
         this.price = planPrice;
-        return  "Plan Upgraded to ".concat(plan).concat("Successfully") ;
+        return  "Plan Upgraded to " + plan + " Successfully";
     }
     // method which revert premium member
     public void revertRegularMember(String removalReason){
