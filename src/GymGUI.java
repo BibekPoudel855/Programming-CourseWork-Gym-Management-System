@@ -29,15 +29,14 @@ public class GymGUI {
     private final Font MAIN_FONT = new Font("Arial", Font.PLAIN, 18);
 
     // Table formatting constants
-// Update TABLE_HEADER with new column for "Eligible for Upgrade"
 private static final String TABLE_HEADER = String.format(
-    "%-5s %-22s %-18s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-12s %-15s %-20s %-15s %-20s\n",
+    "%-5s %-22s %-30s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-15s %-15s %-20s %-20s\n",
     "ID", "Name", "Location", "Phone", "Email", "Gender", "DOB", "Membership Start", "Plan", "Price", "Attendance",
     "Loyalty", "Active", "Eligible Upgrade", "FullPay", "Discount", "PersonalTrainer", "Net Amount Paid", "Removal Reason"
 );
-private static final String TABLE_HEADER_LINE = "=".repeat(320) + "\n";
+private static final String TABLE_HEADER_LINE = "=".repeat(300) + "\n";
 private static final String TABLE_ROW_FORMAT =
-    "%-5s %-22s %-18s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-12s %-15s %-20s %-15s %-20s\n";
+    "%-5s %-22s %-30s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-15s %-15s %-20s %-20s\n";
     // constructor to make GUI
     public GymGUI() {
         makeMainFrame();
@@ -130,6 +129,7 @@ private static final String TABLE_ROW_FORMAT =
         inputPanel.add(planLabel);
         planComboBox = new JComboBox<>(planOptions);
         planComboBox.setFont(MAIN_FONT);
+        //////////////////// Calling Event for combobox when user select or changes plan////////
         planComboBox.addActionListener(e -> regularPlan());
         inputPanel.add(planComboBox);
 
@@ -150,7 +150,6 @@ private static final String TABLE_ROW_FORMAT =
 
         return inputPanel;
     }
-
     public void regularPlan() {
         if (planComboBox.getSelectedIndex() == 0) {
             regularPriceField.setText("6500.00");
@@ -161,33 +160,6 @@ private static final String TABLE_ROW_FORMAT =
         }
     }
 
-    public String[] generateDays() {
-        String[] days = new String[31];
-        for (int i = 0; i < 31; i++) {
-            days[i] = String.valueOf(i + 1);
-        }
-        return days;
-    }
-
-    public String[] generateYears(int fromYear, int toYear) {
-        String[] years = new String[toYear - fromYear + 1];
-        for (int i = 0; i < years.length; i++) {
-            years[i] = String.valueOf(fromYear + i);
-        }
-        return years;
-    }
-
-    public JTextField createInputField(JPanel panel, String labelText) {
-        JLabel inputLabel = new JLabel(labelText);
-        inputLabel.setFont(MAIN_FONT);
-        panel.add(inputLabel);
-
-        JTextField inputTextField = new JTextField();
-        inputTextField.setFont(MAIN_FONT);
-        panel.add(inputTextField);
-
-        return inputTextField;
-    }
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
@@ -211,7 +183,58 @@ private static final String TABLE_ROW_FORMAT =
 
         return buttonPanel;
     }
+    public JTextField createInputField(JPanel panel, String labelText) {
+        JLabel inputLabel = new JLabel(labelText);
+        inputLabel.setFont(MAIN_FONT);
+        panel.add(inputLabel);
 
+        JTextField inputTextField = new JTextField();
+        inputTextField.setFont(MAIN_FONT);
+        panel.add(inputTextField);
+
+        return inputTextField;
+    }
+
+    public JButton createButton(JPanel panel, String text) {
+        JButton button = new JButton(text);
+        button.setBackground(buttonColor);
+        button.setForeground(Color.WHITE);
+        button.setFont(MAIN_FONT);
+        panel.add(button);
+        return button;
+    }
+
+    public JPanel createDisplayPanel() {
+        displayPanel = new JPanel();
+        displayPanel.setLayout(new BorderLayout());
+        displayPanel.setFont(MAIN_FONT);
+        displayPanel.setBorder(BorderFactory.createTitledBorder("Data"));
+
+        displayTextArea = new JTextArea();
+        // displayTextArea.setFont(MAIN_FONT);
+        displayTextArea.setEditable(false);
+        displayTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14)); // Use Monospaced font
+        displayTextArea.setCaretPosition(0);
+        JScrollPane scrollPane = new JScrollPane(displayTextArea);
+        displayPanel.add(scrollPane, BorderLayout.CENTER);
+
+        return displayPanel;
+    }
+    public String[] generateDays() {
+        String[] days = new String[31];
+        for (int i = 0; i < 31; i++) {
+            days[i] = String.valueOf(i + 1);
+        }
+        return days;
+    }
+
+    public String[] generateYears(int fromYear, int toYear) {
+        String[] years = new String[toYear - fromYear + 1];
+        for (int i = 0; i < years.length; i++) {
+            years[i] = String.valueOf(fromYear + i);
+        }
+        return years;
+    }
     public boolean validatePersonalInformation() {
         String[] details = getInputFieldDatas();
         String idStr = details[0];
@@ -291,7 +314,7 @@ private static final String TABLE_ROW_FORMAT =
         try {
             int id = Integer.parseInt(idStr);
             if (id <= 0) {
-                JOptionPane.showMessageDialog(frame, "ID must be a positive number");
+                JOptionPane.showMessageDialog(frame, "ID must be positive number");
                 idField.requestFocus();
                 idField.setText("");
                 return null;
@@ -326,21 +349,6 @@ private static final String TABLE_ROW_FORMAT =
         };
     }
     
-    private boolean isIdInFile(int id) {
-        File file = new File("MemberDetails.txt");
-        if (!file.exists()) return false;
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (line.isEmpty() || line.startsWith("ID") || line.startsWith("=")) continue;
-                String[] parts = line.split("\\s+");
-                if (parts.length > 0 && parts[0].matches("\\d+")) {
-                    if (Integer.parseInt(parts[0]) == id) return true;
-                }
-            }
-        } catch (Exception ignored) {}
-        return false;
-    }
     private Boolean addMemberToList(GymMember member) {
         try {
             memberList.add(member);
@@ -349,6 +357,15 @@ private static final String TABLE_ROW_FORMAT =
             return false;
         }
     }
+    private GymMember findMemberById(int id) {
+        for (GymMember member : memberList) {
+            if (member.getId() == id) {
+                return member;
+            }
+        }
+        return null;
+    }
+
     private void addButtonEventListner() {
         // Add Regular Member button event
             addRegularButton.addActionListener(e -> {
@@ -367,7 +384,7 @@ private static final String TABLE_ROW_FORMAT =
             if (id == null) {
                 return;
             }
-            if (findMemberById(id) != null || isIdInFile(id)) {
+            if (findMemberById(id) != null) {
                 JOptionPane.showMessageDialog(frame, "Member ID Duplicate");
                 return;
             }
@@ -399,7 +416,7 @@ private static final String TABLE_ROW_FORMAT =
             if (id == null) {
                 return;
             }
-            if (findMemberById(id) != null || isIdInFile(id)) {
+            if (findMemberById(id) != null) {
                 JOptionPane.showMessageDialog(frame, "Member ID Duplicate");
                 return;
             }
@@ -593,18 +610,10 @@ private static final String TABLE_ROW_FORMAT =
             memberList.remove(member);
             JOptionPane.showMessageDialog(frame, "Premium Member reverted successfully");
         });
-
-        // Display button event
-        displayButton.addActionListener(e -> {
-    if (memberList.isEmpty()) {
-        JOptionPane.showMessageDialog(frame, "No members to display");
-        return;
     }
-    StringBuilder sb = new StringBuilder();
-    sb.append(TABLE_HEADER);
-    sb.append(TABLE_HEADER_LINE);
-    for (GymMember member : memberList) {
-        String plan = "", price = "", fullPayment = "NA", discount = "NA", personalTrainer = "NA", netAmountPaid = "NA", removalReason = "NA";
+
+    private String formatMemberLine(GymMember member) {
+        String plan = "NA", price = "NA", fullPayment = "NA", discount = "NA", personalTrainer = "NA", netAmountPaid = "NA", removalReason = "NA";
         String eligibleForUpgrade = "No";
         int attendance = member.getAttendance();
         double loyaltyPoints = member.getLoyaltyPoints();
@@ -612,134 +621,250 @@ private static final String TABLE_ROW_FORMAT =
         String gender = member.getGender();
         String dob = member.getDOB();
         String startDate = member.getMembershipStartDate();
-
-        if (member instanceof RegularMember) {
-            RegularMember rm = (RegularMember) member;
-            plan = rm.getPlan();
-            price = String.valueOf(rm.getPrice());
-            if (active && attendance >= 5) {
-                eligibleForUpgrade = "Yes";
-            }
-            removalReason = rm.getRemovalReason() != null && !rm.getRemovalReason().isEmpty() ? rm.getRemovalReason() : "NA";
-        } else if (member instanceof PremiumMember) {
-            PremiumMember pm = (PremiumMember) member;
-            plan = "Premium";
-            price = String.valueOf(pm.getPremiumCharge());
-            fullPayment = pm.isFullPayment() ? "true" : "false";
-            discount = pm.isFullPayment() ? String.valueOf(pm.getDiscountAmount()) : "0";
-            personalTrainer = pm.getPersonalTrainer();
-            netAmountPaid = String.valueOf(pm.getPaidAmount());
-        }
-
-        String line = String.format(
-            TABLE_ROW_FORMAT,
-            member.getId(),
-            member.getName(),
-            member.getLocation(),
-            member.getPhone(),
-            member.getEmail(),
-            gender,
-            dob,
-            startDate,
-            plan,
-            price,
-            attendance,
-            String.format("%.2f", loyaltyPoints),
-            active ? "Active" : "Inactive",
-            eligibleForUpgrade,
-            fullPayment,
-            discount,
-            personalTrainer,
-            netAmountPaid,
-            removalReason
-        );
-        sb.append(line);
+        String status;
+        if (active) {
+        status = "Active";
+    } else {
+        status = "Inactive";
     }
-    displayTextArea.setText(sb.toString());
-    displayTextArea.setCaretPosition(0);
-});
+
+    if (member instanceof RegularMember) {
+        RegularMember regularMemberObj = (RegularMember) member;
+        plan = regularMemberObj.getPlan();
+        price = String.valueOf(regularMemberObj.getPrice());
+        if (active && attendance >= 30) {
+            eligibleForUpgrade = "Yes";
+        }
+        removalReason = regularMemberObj.getRemovalReason();
+        if (removalReason == null || removalReason.trim().isEmpty()) {
+            removalReason = "NA";
+        }
+        netAmountPaid = "NA";
+    } else if (member instanceof PremiumMember) {
+        PremiumMember premiumMemberObj = (PremiumMember) member;
+        plan = "Premium";
+        price = String.valueOf(premiumMemberObj.getPremiumCharge());
+        if (premiumMemberObj.isFullPayment()) {
+            fullPayment = "true";
+        } else {
+            fullPayment = "false";
+        }
+        if (premiumMemberObj.isFullPayment()) {
+            discount = String.valueOf(premiumMemberObj.getDiscountAmount());
+        } else {
+            discount = "0";
+        }
+        personalTrainer = premiumMemberObj.getPersonalTrainer();
+        netAmountPaid = String.valueOf(premiumMemberObj.getPaidAmount());
+        removalReason = "NA";
+    }
+
+    return String.format(
+        TABLE_ROW_FORMAT,
+        member.getId(),
+        member.getName(),
+        member.getLocation(),
+        member.getPhone(),
+        member.getEmail(),
+        gender,
+        dob,
+        startDate,
+        plan,
+        price,
+        attendance,
+        String.format("%.2f", loyaltyPoints),
+        status,
+        eligibleForUpgrade,
+        fullPayment,
+        discount,
+        personalTrainer,
+        netAmountPaid,
+        removalReason
+    );
+}
+
+        // Display button event
+        displayButton.addActionListener(e -> {
+            if (memberList.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "No members to display");
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(TABLE_HEADER);
+            sb.append(TABLE_HEADER_LINE);
+            for (GymMember member : memberList) {
+                String plan = "NA", price = "NA", fullPayment = "NA", discount = "NA", personalTrainer = "NA", netAmountPaid = "NA", removalReason = "NA";
+                String eligibleForUpgrade = "No";
+                int attendance = member.getAttendance();
+                double loyaltyPoints = member.getLoyaltyPoints();
+                boolean active = member.isActiveStatus();
+                String gender = member.getGender();
+                String dob = member.getDOB();
+                String startDate = member.getMembershipStartDate();
+                String status;
+                if (active) {
+                    status = "Active";
+                } else {
+                    status = "Inactive";
+                }
+
+                if (member instanceof RegularMember) {
+                    RegularMember regularMemberObj = (RegularMember) member;
+                    plan = regularMemberObj.getPlan();
+                    price = String.valueOf(regularMemberObj.getPrice());
+                    if (active && attendance >= 30) {
+                        eligibleForUpgrade = "Yes";
+                    }
+                    removalReason = regularMemberObj.getRemovalReason();
+                    if (removalReason == null || removalReason.trim().isEmpty()) {
+                        removalReason = "NA";
+                    }
+                    netAmountPaid = "NA";
+                } else if (member instanceof PremiumMember) {
+                    PremiumMember premiumMemberObj = (PremiumMember) member;
+                    plan = "Premium";
+                    price = String.valueOf(premiumMemberObj.getPremiumCharge());
+                    if (premiumMemberObj.isFullPayment()) {
+                        fullPayment = "true";
+                    } else {
+                        fullPayment = "false";
+                    }
+                    if (premiumMemberObj.isFullPayment()) {
+                        discount = String.valueOf(premiumMemberObj.getDiscountAmount());
+                    } else {
+                        discount = "0";
+                    }
+                    personalTrainer = premiumMemberObj.getPersonalTrainer();
+                    netAmountPaid = String.valueOf(premiumMemberObj.getPaidAmount());
+                    removalReason = "NA";
+                }
+
+                String line = String.format(
+                    TABLE_ROW_FORMAT,
+                    member.getId(),
+                    member.getName(),
+                    member.getLocation(),
+                    member.getPhone(),
+                    member.getEmail(),
+                    gender,
+                    dob,
+                    startDate,
+                    plan,
+                    price,
+                    attendance,
+                    String.format("%.2f", loyaltyPoints),
+                    status,
+                    eligibleForUpgrade,
+                    fullPayment,
+                    discount,
+                    personalTrainer,
+                    netAmountPaid,
+                    removalReason
+                );
+                sb.append(line);
+            }
+            displayTextArea.setText(sb.toString());
+            displayTextArea.setCaretPosition(0);
+        });
+
+        // Save to File button event
+        saveToFileButton.addActionListener(e -> {
+            if (memberList.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "No members to save");
+                return;
+            }
+            try {
+                File file = new File("MemberDetails.txt");
+                boolean fileExists = file.exists();
+                FileWriter saveToFileWriter = new FileWriter(file, true); // append mode
+
+                if (!fileExists || file.length() == 0) {
+                    saveToFileWriter.write(TABLE_HEADER);
+                    saveToFileWriter.write(TABLE_HEADER_LINE);
+                }
+
+                for (GymMember member : memberList) {
+                    String plan = "NA", price = "NA", fullPayment = "NA", discount = "NA", personalTrainer = "NA", netAmountPaid = "NA", removalReason = "NA";
+                    String eligibleForUpgrade = "No";
+                    int attendance = member.getAttendance();
+                    double loyaltyPoints = member.getLoyaltyPoints();
+                    boolean active = member.isActiveStatus();
+                    String gender = member.getGender();
+                    String dob = member.getDOB();
+                    String startDate = member.getMembershipStartDate();
+                    String status;
+                    if (active) {
+                        status = "Active";
+                    } else {
+                        status = "Inactive";
+                    }
+
+                    if (member instanceof RegularMember) {
+                        RegularMember regularMemberObj = (RegularMember) member;
+                        plan = regularMemberObj.getPlan();
+                        price = String.valueOf(regularMemberObj.getPrice());
+                        if (active && attendance >= 30) {
+                            eligibleForUpgrade = "Yes";
+                        }
+                        removalReason = regularMemberObj.getRemovalReason();
+                        if (removalReason == null || removalReason.trim().isEmpty()) {
+                            removalReason = "NA";
+                        }
+                        netAmountPaid = "NA";
+                    } else if (member instanceof PremiumMember) {
+                        PremiumMember premiumMemberObj = (PremiumMember) member;
+                        plan = "Premium";
+                        price = String.valueOf(premiumMemberObj.getPremiumCharge());
+                        if(premiumMemberObj.isFullPayment()) {
+                            fullPayment = "true";
+                        } else {
+                            fullPayment = "false";
+                        }
+                        if (premiumMemberObj.isFullPayment()) {
+                            discount = String.valueOf(premiumMemberObj.getDiscountAmount());
+                        } else {
+                            discount = "0";
+                        }
+                        personalTrainer = premiumMemberObj.getPersonalTrainer();
+                        netAmountPaid = String.valueOf(premiumMemberObj.getPaidAmount());
+                        removalReason = "NA";
+                    }
+
+                    String line = String.format(
+                        TABLE_ROW_FORMAT,
+                        member.getId(),
+                        member.getName(),
+                        member.getLocation(),
+                        member.getPhone(),
+                        member.getEmail(),
+                        gender,
+                        dob,
+                        startDate,
+                        plan,
+                        price,
+                        attendance,
+                        String.format("%.2f", loyaltyPoints),
+                        status,
+                        eligibleForUpgrade,
+                        fullPayment,
+                        discount,
+                        personalTrainer,
+                        netAmountPaid,
+                        removalReason
+                    );
+                    saveToFileWriter.write(line);
+                }
+                saveToFileWriter.close();
+                JOptionPane.showMessageDialog(frame, "Member details saved to FILE MemberDetails.txt");
+            } catch (IOException er) {
+                JOptionPane.showMessageDialog(frame, "An error occurred while saving." + er.getMessage());
+            }
+        });
 
         // Clear button event
         clearButton.addActionListener(e -> {
             clearInputFields();
-            
         });
-
-        // Save to File button event (only one, no duplicate)
-        saveToFileButton.addActionListener(e -> {
-    if (memberList.isEmpty()) {
-        JOptionPane.showMessageDialog(frame, "No members to save");
-        return;
-    }
-    try {
-        File file = new File("MemberDetails.txt");
-        boolean fileExists = file.exists();
-        FileWriter saveToFileWriter = new FileWriter(file, true); // append mode
-
-        if (!fileExists || file.length() == 0) {
-            saveToFileWriter.write(TABLE_HEADER);
-            saveToFileWriter.write(TABLE_HEADER_LINE);
-        }
-
-        for (GymMember member : memberList) {
-            String plan = "", price = "", fullPayment = "NA", discount = "NA", personalTrainer = "NA", netAmountPaid = "NA", removalReason = "NA";
-            String eligibleForUpgrade = "No";
-            int attendance = member.getAttendance();
-            double loyaltyPoints = member.getLoyaltyPoints();
-            boolean active = member.isActiveStatus();
-            String gender = member.getGender();
-            String dob = member.getDOB();
-            String startDate = member.getMembershipStartDate();
-
-            if (member instanceof RegularMember) {
-                RegularMember rm = (RegularMember) member;
-                plan = rm.getPlan();
-                price = String.valueOf(rm.getPrice());
-                if (active && attendance >= 5) {
-                    eligibleForUpgrade = "Yes";
-                }
-                removalReason = rm.getRemovalReason() != null && !rm.getRemovalReason().isEmpty() ? rm.getRemovalReason() : "NA";
-            } else if (member instanceof PremiumMember) {
-                PremiumMember pm = (PremiumMember) member;
-                plan = "Premium";
-                price = String.valueOf(pm.getPremiumCharge());
-                fullPayment = pm.isFullPayment() ? "true" : "false";
-                discount = pm.isFullPayment() ? String.valueOf(pm.getDiscountAmount()) : "0";
-                personalTrainer = pm.getPersonalTrainer();
-                netAmountPaid = String.valueOf(pm.getPaidAmount());
-            }
-
-            String line = String.format(
-                TABLE_ROW_FORMAT,
-                member.getId(),
-                member.getName(),
-                member.getLocation(),
-                member.getPhone(),
-                member.getEmail(),
-                gender,
-                dob,
-                startDate,
-                plan,
-                price,
-                attendance,
-                String.format("%.2f", loyaltyPoints),
-                active ? "Active" : "Inactive",
-                eligibleForUpgrade,
-                fullPayment,
-                discount,
-                personalTrainer,
-                netAmountPaid,
-                removalReason
-            );
-            saveToFileWriter.write(line);
-        }
-        saveToFileWriter.close();
-        JOptionPane.showMessageDialog(frame, "Member details saved to FILE MemberDetails.txt");
-    } catch (IOException er) {
-        JOptionPane.showMessageDialog(frame, "An error occurred while saving." + er.getMessage());
-    }
-});
-
         // Read from File button event
     readFromFileButton.addActionListener(e -> {
         File file = new File("MemberDetails.txt");
@@ -747,30 +872,23 @@ private static final String TABLE_ROW_FORMAT =
             JOptionPane.showMessageDialog(frame, "Member details not found");
             return;
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try {
+            Scanner myReader = new Scanner(file);
             StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                sb.append(data).append("\n");
             }
+            myReader.close();
             displayTextArea.setText(sb.toString());
-            displayTextArea.setCaretPosition(0);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(frame, "Error reading from file: " + ex.getMessage());
+        } catch (FileNotFoundException err) {
+            JOptionPane.showMessageDialog(frame, "An error occurred.");
+            err.printStackTrace();
         }
     });
 }
 
-    private GymMember findMemberById(int id) {
-        for (GymMember member : memberList) {
-            if (member.getId() == id) {
-                return member;
-            }
-        }
-        return null;
-    }
-
-    private void clearInputFields() {
+private void clearInputFields() {
         idField.setText("");
         nameField.setText("");
         locationField.setText("");
@@ -792,33 +910,6 @@ private static final String TABLE_ROW_FORMAT =
         displayTextArea.setText("");
         discountField.setText("0");
     }
-
-    public JButton createButton(JPanel panel, String text) {
-        JButton button = new JButton(text);
-        button.setBackground(buttonColor);
-        button.setForeground(Color.WHITE);
-        button.setFont(MAIN_FONT);
-        panel.add(button);
-        return button;
-    }
-
-    public JPanel createDisplayPanel() {
-        displayPanel = new JPanel();
-        displayPanel.setLayout(new BorderLayout());
-        displayPanel.setFont(MAIN_FONT);
-        displayPanel.setBorder(BorderFactory.createTitledBorder("Data"));
-
-        displayTextArea = new JTextArea();
-        // displayTextArea.setFont(MAIN_FONT);
-        displayTextArea.setEditable(false);
-        displayTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14)); // Use Monospaced font
-        displayTextArea.setCaretPosition(0);
-        JScrollPane scrollPane = new JScrollPane(displayTextArea);
-        displayPanel.add(scrollPane, BorderLayout.CENTER);
-
-        return displayPanel;
-    }
-
     public static void main(String[] args) {
         new GymGUI();
     }
