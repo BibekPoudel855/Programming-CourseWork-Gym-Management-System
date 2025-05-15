@@ -5,7 +5,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// this is main class for gym gui with public access modifier
+/* this is main class for gym gui with public access modifier
+ * this class is handles all gui part of this systme
+ * it handles all user input and display data
+ * it is also handles all event of buttons
+ * it is also handles all data validation from user if enterd incorrect
+ */
 public class GymGUI {
     // instance variables for gui class to access from other all methiods
     // main frame or window variable
@@ -40,16 +45,17 @@ public class GymGUI {
     // this is static and constant, which can be accessed from anywhere in class withoit object
     // kept here to avoid duplication when display and save to file
     private static final String TABLE_HEADER = String.format(
-        "%-5s %-22s %-30s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-15s %-15s %-20s %-20s\n",
+        "%-5s %-22s %-30s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-15s %-15s %-20s %-20s %-20s\n",
         "ID", "Name", "Location", "Phone", "Email", "Gender", "DOB", "Membership Start", "Plan", "Price", "Attendance",
         "Loyalty", "Active", "Eligible Upgrade", "FullPay", "Discount", "PersonalTrainer", "Net Amount Paid", "Removal Reason"
-    );
-    // this is seprator line for table header and other data
-    // repeat mehtod will multiply string with number of time
-    private static final String TABLE_HEADER_LINE = "=".repeat(300) + "\n";
+        );
+        
+    // this is separator line for table header and other data
+    // repeat method will multiply string with number of time
+    private static final String TABLE_HEADER_LINE = "=".repeat(325) + "\n";
     // this is table row format for display and to save file
     private static final String TABLE_ROW_FORMAT =
-        "%-5s %-22s %-30s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-15s %-15s %-20s %-20s\n";
+    "%-5s %-22s %-30s %-15s %-35s %-8s %-12s %-18s %-12s %-10s %-10s %-10s %-15s %-15s %-15s %-15s %-20s %-20s %-20s\n";
 
     // this is constructor run immediately when object is created
     public GymGUI() {
@@ -539,6 +545,7 @@ public class GymGUI {
                 addMemberToList(member);
                 // show message if added successfully
                 JOptionPane.showMessageDialog(frame, "Regular member added successfully");
+                clearInputFields();
             } catch (Exception ex) {
                 // show message if something went wrong
                 JOptionPane.showMessageDialog(frame, "Something went wrong");
@@ -580,6 +587,7 @@ public class GymGUI {
                 addMemberToList(member);
                 // show message if added successfully
                 JOptionPane.showMessageDialog(frame, "Premium member added successfully");
+                clearInputFields();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Something went wrong");
             }
@@ -643,6 +651,7 @@ public class GymGUI {
             member.markAttendance();
             JOptionPane.showMessageDialog(frame, "Attendance marked succesfully");
         });
+
 
         // Upgrade Plan button event
         upgradePlanButton.addActionListener(e -> {
@@ -758,6 +767,7 @@ public class GymGUI {
             PremiumMember premiumMember = (PremiumMember) member;
             String result = premiumMember.payDueAmount(paidAmount);
             JOptionPane.showMessageDialog(frame, result);
+            clearInputFields();
         });
 
         // Revert Regular Member button event
@@ -784,8 +794,8 @@ public class GymGUI {
             RegularMember regularMember = (RegularMember) member;
             // calling method to revert regular member
             regularMember.revertRegularMember(reason);
-            memberList.remove(member);
             JOptionPane.showMessageDialog(frame, "Regular Member reverted successfully");
+            clearInputFields();
         });
 
         // Revert Premium Member button event
@@ -806,8 +816,8 @@ public class GymGUI {
             because this revert premium member is only for premium member */
             PremiumMember premiumMember = (PremiumMember) member;
             premiumMember.revertPremiumMember();
-            memberList.remove(member);
             JOptionPane.showMessageDialog(frame, "Premium Member reverted successfully");
+            clearInputFields();
         });
 
         // Display button event
@@ -900,21 +910,25 @@ public class GymGUI {
 
     // make row for member info for display and file
     private String generateMemberInfoRow(GymMember member) {
+        // setting default values because if member is not premium or regular
         String plan = "NA", price = "NA", fullPayment = "NA", discount = "NA", personalTrainer = "NA", netAmountPaid = "NA", removalReason = "NA";
         String eligibleForUpgrade = "No";
+        // getting all member info then storing to variables
         int attendance = member.getAttendance();
         double loyaltyPoints = member.getLoyaltyPoints();
         boolean active = member.isActiveStatus();
         String gender = member.getGender();
         String dob = member.getDOB();
         String startDate = member.getMembershipStartDate();
+        // setting status to active or inactive based on active status
         String status;
         if (active) {
             status = "Active";
         } else {
             status = "Inactive";
         }
-
+        // checking if member is regular or premium
+        // if regular then getting all regular member info
         if (member instanceof RegularMember) {
             RegularMember regularMemberObj = (RegularMember) member;
             plan = regularMemberObj.getPlan();
@@ -922,15 +936,18 @@ public class GymGUI {
             if (active && attendance >= 30) {
                 eligibleForUpgrade = "Yes";
             }
+            // Show removal reason if set, else NA
             removalReason = regularMemberObj.getRemovalReason();
             if (removalReason == null || removalReason.trim().isEmpty()) {
                 removalReason = "NA";
             }
             netAmountPaid = "NA";
+        // checking if member is premium then getting all premium member info
         } else if (member instanceof PremiumMember) {
             PremiumMember premiumMemberObj = (PremiumMember) member;
             plan = "Premium";
             price = String.valueOf(premiumMemberObj.getPremiumCharge());
+            // getting full payment status
             if (premiumMemberObj.isFullPayment()) {
                 fullPayment = "true";
             } else {
@@ -943,34 +960,35 @@ public class GymGUI {
             }
             personalTrainer = premiumMemberObj.getPersonalTrainer();
             netAmountPaid = String.valueOf(premiumMemberObj.getPaidAmount());
-            removalReason = "NA";
-        }
-
-        String memberDetailRow = String.format(
-            TABLE_ROW_FORMAT,
-            member.getId(),
-            member.getName(),
-            member.getLocation(),
-            member.getPhone(),
-            member.getEmail(),
-            gender,
-            dob,
-            startDate,
-            plan,
-            price,
-            attendance,
-            String.format("%.2f", loyaltyPoints),
-            status,
-            eligibleForUpgrade,
-            fullPayment,
-            discount,
-            personalTrainer,
-            netAmountPaid,
-            removalReason
-        );
-        return memberDetailRow;
+            removalReason = "NA"; 
     }
-
+    // formatting member detail in tablular row
+    String memberDetailRow = String.format(
+        TABLE_ROW_FORMAT,
+        member.getId(),
+        member.getName(),
+        member.getLocation(),
+        member.getPhone(),
+        member.getEmail(),
+        gender,
+        dob,
+        startDate,
+        plan,
+        price,
+        attendance,
+        String.format("%.2f", loyaltyPoints),
+        status,
+        eligibleForUpgrade,
+        fullPayment,
+        discount,
+        personalTrainer,
+        netAmountPaid,
+        removalReason
+    );
+    // returning member detail row
+    // which will be used to display and save to file
+    return memberDetailRow;
+}
     // clear all input fields
     private void clearInputFields() {
         // clearing all input fields
