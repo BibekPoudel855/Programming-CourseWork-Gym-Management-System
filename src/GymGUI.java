@@ -838,7 +838,6 @@ public class GymGUI {
             }
             // setting text area to string builder
             displayTextArea.setText(sb.toString());
-            displayTextArea.setCaretPosition(0);
         });
 
         // Save to File button event
